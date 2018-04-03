@@ -146,6 +146,9 @@ jsonNull = (string "null") *> (pure JNull)
 jstring :: Parser String
 jstring = char '"' *> (many (noneOf ['"'])) <* char '"'
 
+jint :: Parser String
+jint = many (oneOf "+-") *> many1 (oneOf "0123456789")
+
 jsonString' :: Parser JValue
 jsonString' = fmap JString jstring
 
