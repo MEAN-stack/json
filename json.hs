@@ -147,7 +147,25 @@ jstring :: Parser String
 jstring = char '"' *> (many (noneOf ['"'])) <* char '"'
 
 jint :: Parser String
-jint = many (oneOf "+-") *> many1 (oneOf "0123456789")
+jint = many1 (oneOf "0123456789")
+
+jsonInt :: Parser JValue
+jsonInt = do
+            sign <- jsign
+            num <- jint
+            if ( sign == '-' ) then
+                return (JInt ((-1) * (read num :: Int))) 
+            else 
+                if ( sign == '+' ) then
+                    return (JInt (read num :: Int))
+                else
+                    return (JInt (read (sign:num) :: Int))
+
+jsign :: Parser Char
+jsign = (char '+') <|> (char '-') <|> (oneOf "0123456789")
+
+
+
 
 jsonString' :: Parser JValue
 jsonString' = fmap JString jstring
