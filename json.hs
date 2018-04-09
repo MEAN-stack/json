@@ -150,6 +150,13 @@ findJValue :: String -> JValue -> Maybe JValue
 findJValue key (JObject vs) = findObjVal key vs 
 findJValue key _ = Nothing
 
+(##) :: JValue -> String  -> Maybe JValue
+j ## s = findJValue s j
+
+-- j.data.nested.errorCode2
+-- findJValue "data" j >>= findJValue "nested" >>= findJValue "errorCode2"
+-- j ## "data" >>= (## "nested") >>= (## "errorCode2")
+
 findObjVal :: String -> Object -> Maybe JValue
 findObjVal key [] = Nothing
 findObjVal key ((k,v):vs) = if key == k then Just v else findObjVal key vs
@@ -266,3 +273,5 @@ jsonValue = ws *> jsonValue'
 s = stringify j
 
 jv = parseTest jsonValue s
+
+
