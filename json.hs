@@ -153,6 +153,9 @@ findJValue key _ = Nothing
 (##) :: JValue -> String  -> Maybe JValue
 j ## s = findJValue s j
 
+(#) :: Maybe JValue -> String -> Maybe JValue
+mj # s = mj >>= (## s)
+
 -- j.data.nested.errorCode2
 -- findJValue "data" j >>= findJValue "nested" >>= findJValue "errorCode2"
 -- j ## "data" >>= (## "nested") >>= (## "errorCode2")
@@ -262,7 +265,7 @@ keyValue  = do
                return (key, value)
 
 jsonObject :: Parser JValue
-jsonObject = JObject <$> (char' '{' *> (keyValue `sepBy` (char' ',')) <* char '}')
+jsonObject = JObject <$> (char' '{' *> (keyValue `sepBy` (char' ',')) <* char' '}')
 
 jsonValue' :: Parser JValue
 jsonValue' = jsonTrue <|> jsonFalse <|> jsonNull <|> jsonString <|> try jsonReal <|> jsonInt <|> jsonArray <|> jsonObject
@@ -274,4 +277,8 @@ s = stringify j
 
 jv = parseTest jsonValue s
 
-
+main = do
+            let mj = j ## "data"#"nested"#"errorCode2"
+            case mj of
+                Just x -> putStrLn $ show x 
+                _      -> putStrLn "Nothing"
