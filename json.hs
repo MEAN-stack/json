@@ -164,8 +164,8 @@ j ## s = findJValue s j
 (#) :: Maybe JValue -> String -> Maybe JValue
 mj # s = mj >>= (## s)
 
-(.!!) :: Maybe JValue -> Int -> Maybe JValue
-mj .!! i = mj >>= (findArrayVal i)
+(%%) :: Maybe JValue -> Int -> Maybe JValue
+mj %% i = mj >>= (findArrayVal i)
 
 -- j.data.nested.errorCode2
 -- findJValue "data" j >>= findJValue "nested" >>= findJValue "errorCode2"
@@ -285,6 +285,10 @@ jsonValue = ws *> jsonValue'
 s = stringify j
 
 jv = parseTest jsonValue s
+
+getParsedJValue :: Either a JValue -> Maybe JValue
+getParsedJValue (Right jv) = Just jv
+getParsedJValue (Left _) = Nothing
 
 main = do
             let mj = j ## "data"#"nested"#"errorCode2"
