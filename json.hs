@@ -125,11 +125,7 @@ isArray _ = False
 isObject :: JValue -> Bool
 isObject (JObject v) = True
 isObject _ = False
---}
 
--- Manipulate JSON values
--- 
--- 
 getString :: JValue -> Maybe String
 getString (JString s) = Just s
 getString _ = Nothing
@@ -145,6 +141,18 @@ getReal _ = Nothing
 getObject :: JValue -> Maybe Object
 getObject (JObject o) = Just o
 getObject _ = Nothing
+--}
+
+-- Manipulate JSON values
+-- 
+-- 
+findArrayVal :: Int -> JValue -> Maybe JValue
+findArrayVal index (JArray ja) = if (index < (length ja)) then Just (ja !! index) else Nothing
+findArrayVal _ _ = Nothing
+
+findObjVal :: String -> Object -> Maybe JValue
+findObjVal key [] = Nothing
+findObjVal key ((k,v):vs) = if key == k then Just v else findObjVal key vs
 
 findJValue :: String -> JValue -> Maybe JValue
 findJValue key (JObject vs) = findObjVal key vs 
@@ -156,13 +164,14 @@ j ## s = findJValue s j
 (#) :: Maybe JValue -> String -> Maybe JValue
 mj # s = mj >>= (## s)
 
+(.!!) :: Maybe JValue -> Int -> Maybe JValue
+mj .!! i = mj >>= (findArrayVal i)
+
 -- j.data.nested.errorCode2
 -- findJValue "data" j >>= findJValue "nested" >>= findJValue "errorCode2"
 -- j ## "data" >>= (## "nested") >>= (## "errorCode2")
-
-findObjVal :: String -> Object -> Maybe JValue
-findObjVal key [] = Nothing
-findObjVal key ((k,v):vs) = if key == k then Just v else findObjVal key vs
+-- j ## "data"#"nested"#"errorCode2"
+-- j ## "people" >>= findArrayVal 2
 
 -- TODO
 -- stuff like this (JavaScript):
