@@ -2,7 +2,7 @@
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 4106f3f84d3f7838ee1c705e4e922f1e18b5b1a06651c38bd2940acbe9a3fac7
+-- hash: fec5166f8a2b18c342c3de1ac719f507dfaae515e344724c39a9ed879b5ce732
 
 name:           json
 version:        0.1.0.0
@@ -34,7 +34,7 @@ library
     , hspec
     , parsec
   exposed-modules:
-      Lib
+      Json
   other-modules:
       Paths_json
   default-language: Haskell2010

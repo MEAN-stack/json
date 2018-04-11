@@ -1,5 +1,15 @@
-module Lib
-    ( jsonTest
+module Json
+    ( JValue (JNull, JString, JInt, JReal, JTrue, JFalse, JArray, JObject)
+     ,stringify
+     ,prettify
+     ,findArrayVal
+     ,findJValue
+     ,(##)
+     ,(#)
+     ,(!)
+     ,getParsedJValue
+     ,jsonValue
+     ,jsonTest
     ) where
 
 import Data.List
@@ -53,7 +63,7 @@ data JValue =
     | JFalse
     | JArray [JValue]
     | JObject [(String, JValue)]
-    deriving (Read, Show)
+    deriving (Read, Show, Eq)
 
 -- a JSON object is a lisk of key-value pairs
 --

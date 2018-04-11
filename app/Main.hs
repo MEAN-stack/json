@@ -1,6 +1,6 @@
 module Main where
 
-import Lib
+import Json
 
 main :: IO ()
 main = jsonTest
