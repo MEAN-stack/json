@@ -1,3 +1,7 @@
+module Lib
+    ( jsonTest
+    ) where
+
 import Data.List
 import Text.ParserCombinators.Parsec hiding ((<|>), many)
 import Control.Applicative
@@ -291,7 +295,8 @@ getParsedJValue :: Either a JValue -> Maybe JValue
 getParsedJValue (Right jv) = Just jv
 getParsedJValue (Left _) = Nothing
 
-main = do
+jsonTest :: IO ()
+jsonTest = do
             let mj = j ## "data"#"nested"#"errorCode2"
             case mj of
                 Just x -> putStrLn $ show x 
