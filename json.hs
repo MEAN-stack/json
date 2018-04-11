@@ -164,14 +164,15 @@ j ## s = findJValue s j
 (#) :: Maybe JValue -> String -> Maybe JValue
 mj # s = mj >>= (## s)
 
-(%%) :: Maybe JValue -> Int -> Maybe JValue
-mj %% i = mj >>= (findArrayVal i)
+(!) :: Maybe JValue -> Int -> Maybe JValue
+mj ! i = mj >>= (findArrayVal i)
 
 -- j.data.nested.errorCode2
 -- findJValue "data" j >>= findJValue "nested" >>= findJValue "errorCode2"
 -- j ## "data" >>= (## "nested") >>= (## "errorCode2")
 -- j ## "data"#"nested"#"errorCode2"
 -- j ## "people" >>= findArrayVal 2
+-- j ## "people" ! 2
 
 -- TODO
 -- stuff like this (JavaScript):
