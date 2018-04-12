@@ -195,6 +195,15 @@ mj ! i = mj >>= (findArrayVal i)
 -- j.people.push(100)
 -- delete j.status.age
 
+modify :: (JValue -> JValue) -> Int -> JValue -> JValue
+modify _ _ (JArray [])     = JArray []
+modify f index (JArray ja) = if (index < (length ja)) 
+                    then let (l , jv:r) = splitAt index ja in
+                        JArray (l ++ (f jv):r) 
+                    else JArray ja
+
+-- modify (\(JString s) -> JString "Will") 2 (JArray [JString "Paul",JString "Ann",JString "Joe",JObject [("errorCode2",JReal 9900000.0),("message2",JString "Error")]])
+
 -- Parsing
 --
 -- Whitespace consumer
