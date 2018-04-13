@@ -188,22 +188,31 @@ mj ! i = mj >>= (findArrayVal i)
 -- j ## "people" >>= findArrayVal 2
 -- j ## "people" ! 2
 
--- TODO
--- stuff like this (JavaScript):
--- console.log(j.data.nested.message2)
--- j.people[2] = "Will"
--- j.people.push(100)
--- delete j.status.age
+splitObjectAt :: String -> Object -> (Object, Object)
+splitObjectAt _ [] = ([], [])
+splitObjectAt key ((k,v):kvs) = if key == k
+                                then ([], ((k,v):kvs))
+                                else ((k, v):(fst x), snd x) where
+                                    x = splitObjectAt key kvs
 
-modify :: (JValue -> JValue) -> Int -> JValue -> JValue
-modify _ _ (JArray [])     = JArray []
-modify f index (JArray ja) = if (index < (length ja)) 
-                    then let (l , jv:r) = splitAt index ja in
-                        JArray (l ++ (f jv):r) 
-                    else JArray ja
+modifyObject :: (JValue -> JValue) -> String -> JValue -> JValue
+modifyObject _ _ (JObject [])   = JObject []
+modifyObject f key (JObject jo) = if (findObjVal key jo == Nothing)
+                                  then JObject jo
+                                  else let (l , (k,jv):r) = splitObjectAt key jo in
+                                      JObject (l ++ (k, f jv):r)
+modifyObject _ _ jv             = jv
 
--- modify (\(JString s) -> JString "Will") 2 (JArray [JString "Paul",JString "Ann",JString "Joe",JObject [("errorCode2",JReal 9900000.0),("message2",JString "Error")]])
+modifyArray :: (JValue -> JValue) -> Int -> JValue -> JValue
+modifyArray _ _ (JArray [])     = JArray []
+modifyArray f index (JArray ja) = if (index < (length ja)) 
+                                  then let (l , jv:r) = splitAt index ja in
+                                      JArray (l ++ (f jv):r) 
+                                  else JArray ja
+modifyArray _ _ jv              = jv
 
+-- modifyArray (\(JString s) -> JString "Will") 2 (JArray [JString "Paul",JString "Ann",JString "Joe",JObject [("errorCode2",JReal 9900000.0),("message2",JString "Error")]])
+-- modifyObject (\_ -> JString "Will") "id" JObject [("type",JString "one"),("id",JString "Will"),("data",JObject [("errorCode",JReal 9.99e7),("message",JString "Error")])]
 -- Parsing
 --
 -- Whitespace consumer
