@@ -10,6 +10,8 @@ module Json
      ,getParsedJValue
      ,jsonValue
      ,jsonTest
+     ,modifyArray
+     ,modifyObject
     ) where
 
 import Data.List
@@ -211,8 +213,12 @@ modifyArray f index (JArray ja) = if (index < (length ja))
                                   else JArray ja
 modifyArray _ _ jv              = jv
 
--- modifyArray (\(JString s) -> JString "Will") 2 (JArray [JString "Paul",JString "Ann",JString "Joe",JObject [("errorCode2",JReal 9900000.0),("message2",JString "Error")]])
--- modifyObject (\_ -> JString "Will") "id" JObject [("type",JString "one"),("id",JString "Will"),("data",JObject [("errorCode",JReal 9.99e7),("message",JString "Error")])]
+-- modifyArray (\_ -> JString "Will") 2 (JArray [JString "Paul",JString "Ann",JString "Joe",JObject [("errorCode2",JReal 9900000.0),("message2",JString "Error")]])
+-- modifyObject (\_ -> JString "Will") "id" (JObject [("type",JString "one"),("id",JString "Joe"),("data",JObject [("errorCode",JReal 9.99e7),("message",JString "Error")])])
+
+-- modifyObject (\_ -> JInt (-1)) "errorCode2" (j ## "data"#"nested")
+
+
 -- Parsing
 --
 -- Whitespace consumer

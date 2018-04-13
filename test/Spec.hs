@@ -37,4 +37,14 @@ main = hspec $ do
             let jv = getParsedJValue $ parse jsonValue "test" "{\"name\":{\"first\":\"Paul\",\"last\":\"Robertson\"},\"likes\":[\"beer\",\"climbing\",\"computing\"]}"
             jv # "likes" ! 3 `shouldBe` Nothing
 
+    describe "object modification" $ do
+        it "modifies an object field identified by key" $ do
+            let jo = modifyObject (\_ -> JString "Will") "id" (JObject [("type",JString "one"),("id",JString "Joe"),("data",JObject [("errorCode",JReal 9.99e7),("message",JString "Error")])])
+            jo `shouldBe` (JObject [("type",JString "one"),("id",JString "Will"),("data",JObject [("errorCode",JReal 9.99e7),("message",JString "Error")])])
 
+    describe "array modification" $ do
+        it "modifies an array field at a specific index" $ do
+            let ja = modifyArray (\_ -> JString "Will") 2 (JArray [JString "Paul",JString "Ann",JString "Joe",JObject [("errorCode2",JReal 9900000.0),("message2",JString "Error")]])
+            ja `shouldBe` (JArray [JString "Paul",JString "Ann",JString "Will",JObject [("errorCode2",JReal 9900000.0),("message2",JString "Error")]])
+
+        
