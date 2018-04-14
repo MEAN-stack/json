@@ -48,3 +48,40 @@ JArray [JTrue,JFalse,JNull,JReal 1.23]
 JObject [("name",JString "Paul"),("age",JInt 7)]
 *Json> :t j
 ```
+
+Cool, it works. The next step will be to write a **stringify** function.
+
+## Step 2
+## print and prettyprint
+
+We'll write the equivalent of JavaScript's **JSON.stringify** function:
+
+```haskell
+stringify :: JValue -> String
+stringify JNull = "null"
+stringify (JString s) = show s
+stringify (JInt i) = show i
+stringify (JReal r) = show r
+stringify JTrue = "true"
+stringify JFalse = "false"
+stringify (JArray vs) = "[" ++ (intercalate "," $ map stringify vs) ++ "]"
+stringify (JObject os) = "{" ++ (intercalate "," $ map (\(key, val) -> show key ++ ":" ++ stringify val) os) ++ "}"
+```
+
+we're using the function **intercalate** from **Data.List**. Its type is:
+
+```shell
+**intercalate :: [a] -> [[a]] -> [a]**
+```
+In our case the type a is Char, so the signature is:
+
+```bash
+**String -> [String] -> String**
+```
+intercalate takes a list of strings, inserts a given string in between each string in the list, and flattens the result. Like this:
+
+```shell
+Prelude Data.List> intercalate "," ["one", "two", "three"]
+"one,two,three"
+```
+
