@@ -71,12 +71,12 @@ stringify (JObject os) = "{" ++ (intercalate "," $ map (\(key, val) -> show key 
 we're using the function **intercalate** from **Data.List**. Its type is:
 
 ```shell
-**intercalate :: [a] -> [[a]] -> [a]**
+intercalate :: [a] -> [[a]] -> [a]
 ```
 In our case the type a is Char, so the signature is:
 
 ```bash
-**String -> [String] -> String**
+String -> [String] -> String
 ```
 intercalate takes a list of strings, inserts a given string in between each string in the list, and flattens the result. Like this:
 
