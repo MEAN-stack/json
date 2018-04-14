@@ -32,7 +32,7 @@ And I'm not going to worry about escaped unicode values in strings.
 
 Ok. Let's try it out:
 
-```console
+```shell
 *Json> let j = JNull
 *Json> j
 JNull
@@ -75,7 +75,7 @@ intercalate :: [a] -> [[a]] -> [a]
 ```
 In our case the type a is Char, so the signature is:
 
-```bash
+```shell
 String -> [String] -> String
 ```
 intercalate takes a list of strings, inserts a given string in between each string in the list, and flattens the result. Like this:
