@@ -21,7 +21,5 @@ data JValue =
 ```
 
 You'll see that I decided to use separate value constructors **JTrue** and **JFalse**, rather than **JBool Boolean**. It isn't clear to me yet which would be better.
-
 I also felt it would be better to handle **Ints** and **Doubles** separately.
-
 And I'm not going to worry about escaped unicode values in strings.
