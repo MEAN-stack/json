@@ -86,4 +86,35 @@ intercalate takes a list of strings, inserts a given string in between each stri
 Prelude Data.List> intercalate "," ["one", "two", "three"]
 "one,two,three"
 ```
+Before we can test the stringify function we will need to add it to the list of exports and we'll import Data.List.
 
+```shell
+*Json> putStrLn $ stringify $ JObject [("name", JString "Paul"), ("id", JReal 1.23), ("beer", JTrue)]
+{"name":"Paul","id":1.23,"beer":true}
+```
+Ok, great. Now let's try pretty-printing.
+
+First we'll write a helper function which will take a string parameter which we will use for indentation.
+
+```haskell
+prettify' :: String -> JValue -> String
+prettify' spacer (JArray vs)  = "\n" ++ spacer ++ "[\n" ++ (intercalate ",\n" $ map (prettify' sp) vs) ++ "\n" ++ spacer ++ "]"
+    where sp = spacer ++ "    "
+
+prettify' spacer (JObject os) = "\n" ++ spacer ++ "{\n" ++ sp ++ (intercalate (",\n" ++ sp) $ map (\(key, val) -> show key ++ " : " ++ rend sp val) os) ++ "\n" ++ spacer ++ "}"
+    where sp = spacer ++ "    "
+          rend sp (JArray vs)  = prettify' sp (JArray vs)
+          rend sp (JObject os) = prettify' sp (JObject os)
+          rend sp x            = stringify x
+
+prettify' spacer x = spacer ++ stringify x
+```
+We deal with three patterns:
+Arrays, objects and everything else
+
+Now, for the real **prettify** function which we will export. We just call **prettify'** with an empty string, so our output won't be indented at the outermost level.
+
+```haskell
+prettify :: JValue -> String
+prettify = prettify' ""
+```
