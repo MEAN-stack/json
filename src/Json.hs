@@ -10,8 +10,10 @@ module Json
      ,getParsedJValue
      ,jsonValue
      ,jsonTest
-     ,modifyArray
-     ,modifyObject
+     ,updateArray
+     ,updateMaybeArray
+     ,updateObject
+     ,updateMaybeObject
     ) where
 
 import Data.List
@@ -197,28 +199,43 @@ splitObjectAt key ((k,v):kvs) = if key == k
                                 else ((k, v):(fst x), snd x) where
                                     x = splitObjectAt key kvs
 
-modifyObject :: (JValue -> JValue) -> String -> JValue -> JValue
-modifyObject _ _ (JObject [])   = JObject []
-modifyObject f key (JObject jo) = if (findObjVal key jo == Nothing)
+updateObject :: JValue -> String -> JValue -> JValue
+updateObject _ _ (JObject [])   = JObject []
+updateObject v key (JObject jo) = if (findObjVal key jo == Nothing)
                                   then JObject jo
                                   else let (l , (k,jv):r) = splitObjectAt key jo in
-                                      JObject (l ++ (k, f jv):r)
-modifyObject _ _ jv             = jv
+                                      JObject (l ++ (k, v):r)
+updateObject _ _ jv             = jv
 
-modifyArray :: (JValue -> JValue) -> Int -> JValue -> JValue
-modifyArray _ _ (JArray [])     = JArray []
-modifyArray f index (JArray ja) = if (index < (length ja)) 
+updateMaybeObject :: Maybe JValue -> String -> JValue -> JValue
+updateMaybeObject mv key (JObject jo) = case mv of
+                                            Nothing -> JObject jo
+                                            Just v -> updateObject v key (JObject jo)
+
+updateArray :: JValue -> Int -> JValue -> JValue
+updateArray _ _ (JArray [])     = JArray []
+updateArray v index (JArray ja) = if (index < (length ja)) 
                                   then let (l , jv:r) = splitAt index ja in
-                                      JArray (l ++ (f jv):r) 
+                                      JArray (l ++ v:r) 
                                   else JArray ja
-modifyArray _ _ jv              = jv
+updateArray _ _ jv              = jv
 
--- modifyArray (\_ -> JString "Will") 2 (JArray [JString "Paul",JString "Ann",JString "Joe",JObject [("errorCode2",JReal 9900000.0),("message2",JString "Error")]])
--- modifyObject (\_ -> JString "Will") "id" (JObject [("type",JString "one"),("id",JString "Joe"),("data",JObject [("errorCode",JReal 9.99e7),("message",JString "Error")])])
+updateMaybeArray :: Maybe JValue -> Int -> JValue -> JValue
+updateMaybeArray mv index (JObject jo) = case mv of
+                                            Nothing -> JObject jo
+                                            Just v -> updateArray v index (JObject jo)
 
--- modifyObject (\_ -> JInt (-1)) "errorCode2" (j ## "data"#"nested")
+-- updateArray (\_ -> JString "Will") 2 (JArray [JString "Paul",JString "Ann",JString "Joe",JObject [("errorCode2",JReal 9900000.0),("message2",JString "Error")]])
+-- updateObject (\_ -> JString "Will") "id" (JObject [("type",JString "one"),("id",JString "Joe"),("data",JObject [("errorCode",JReal 9.99e7),("message",JString "Error")])])
+-- updateObject (\_ -> JInt (-1)) "errorCode2" (j ## "data"#"nested")
 
-
+testJson = "{\"name\":\"Paul\",\"age\":13,\"likes\":[\"JavaScript\",\"C\",\"Haskell\"],\"married\":\"true\"}"
+-- testObj = getParsedJValue $ parse jsonValue  "x" testJson
+testJValue = JObject [("name",JString "Paul"),("age",JInt 9),("likes",JArray [JString "JavaScript",JString "C",JString "Haskell"]),("married",JString "true")]
+-- updateObject (JReal 11.5) "age" testJValue
+-- fmap (updateArray (JString "C++") 1) (testJValue ## "likes")
+-- updateObject JNull "likes" testJValue
+-- updateMaybeObject (fmap (updateArray (JString "C++") 1) (testJValue ## "likes")) "likes" testJValue
 -- Parsing
 --
 -- Whitespace consumer
