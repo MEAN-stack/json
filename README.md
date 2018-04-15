@@ -20,9 +20,11 @@ data JValue =
     | JFalse
     | JArray [JValue]
     | JObject [(String, JValue)]
-    deriving (Read, Show)
+    deriving (Read, Show, Eq)
 ```
-The module declaration at the top of the file just exports our data type to make it visible to the outside world. We could ask the compiler to derive an instance of **Eq** but we won't do that because it would mean that the order of key-value pairs in a JObject would be significant, whereas in JavaScript it isn't.
+The module declaration at the top of the file just exports our data type to make it visible to the outside world.
+
+Notice that we asked the compiler to derive an instance of **Eq**. That means that the order of key-value pairs in a JObject will be significant, whereas in JavaScript it isn't.
 
 You'll see that I decided to use separate value constructors **JTrue** and **JFalse**, rather than **JBool Boolean**. It isn't clear to me yet which would be better.
 
