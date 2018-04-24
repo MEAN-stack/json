@@ -346,9 +346,28 @@ getParsedJValue :: Either a JValue -> Maybe JValue
 getParsedJValue (Right jv) = Just jv
 getParsedJValue (Left _) = Nothing
 
+-- Zipper
+-- {"type":4611,"id":100,"data":{"errorCode":2,"errorMessage":"invalid cameraId"}}
+x = JObject [("type", JInt 4611),("id", JInt 100), ("array", JArray [JTrue, JFalse, JReal 1.23]), ("data", JObject [("errorCode", JInt 2),("errorMessage", JString "invalid cameraId")])]
+--type Zipper (JValue, [Breadcrumb])
+
+--(("id", JInt 100), JObject [("type", JInt 4611),("id", JInt 100), ("array", JArray [JTrue, JFalse, JReal 1.23]), ("data", JObject [("errorCode", JInt 2),("errorMessage", JString "invalid cameraId")])])
+--
+--((1, JFalse), JArray [JTrue, JReal 1.23])
+
+
+
+
 jsonTest :: IO ()
 jsonTest = do
-            let mj = j ## "data"#"nested"#"errorCode2"
-            case mj of
-                Just x -> putStrLn $ show x 
-                _      -> putStrLn "Nothing"
+               s <- readFile "sample.json"
+               let ej = parse jsonValue "xxx" s
+                   mj = getParsedJValue ej
+               case mj of
+                   Nothing -> putStrLn "Nothing"
+                   Just jv -> putStrLn $ prettify jv
+
+--            let mj = j ## "data"#"nested"#"errorCode2"
+--            case mj of
+--                Just x -> putStrLn $ show x 
+--                _      -> putStrLn "Nothing"
